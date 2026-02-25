@@ -1,5 +1,229 @@
-<div class="row">
-  <div class="col-md-12">
-    <h1>Welcome to Angular CURD Application</h1>
+<div class="container-fluid">
+  <div class="row">
+    <!-- Header -->
+    <div class="col-md-12 text-center header-section">
+      <h1 class="main-title">
+        <i class="bi bi-people-fill"></i>
+        Angular CRUD Application
+        <span class="badge bg-info ms-2">Local Storage</span>
+      </h1>
+    </div>
+
+    <!-- Employee List -->
+    <div class="col-md-8 mb-4">
+      <div class="card shadow-lg animate-slide-in">
+        <div class="card-header bg-gradient-primary">
+          <h4 class="mb-0">
+            <i class="bi bi-list-ul"></i> Employee List
+            <span class="badge bg-light text-dark float-end">
+              Total: {{employeeList.length}}
+            </span>
+          </h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped">
+              <thead class="table-dark">
+                <tr>
+                  <th>S.No</th>
+                  <th>Name</th>
+                  <th>Contact No</th>
+                  <th>Email Id</th>
+                  <th>City</th>
+                  <th class="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let employee of employeeList; let i = index" class="animate-fade-in">
+                  <td>{{i + 1}}</td>
+                  <td>
+                    <i class="bi bi-person-circle text-primary"></i>
+                    {{employee.empName}}
+                  </td>
+                  <td>
+                    <i class="bi bi-telephone-fill text-success"></i>
+                    {{employee.empPhone}}
+                  </td>
+                  <td>
+                    <i class="bi bi-envelope-fill text-info"></i>
+                    {{employee.empEmail}}
+                  </td>
+                  <td>
+                    <i class="bi bi-geo-alt-fill text-danger"></i>
+                    {{employee.empCity}}
+                  </td>
+                  <td class="text-center">
+                    <button class="btn btn-primary btn-sm me-2 btn-action" 
+                            (click)="onEdit(employee)">
+                      <i class="bi bi-pencil-square"></i> Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm btn-action" 
+                            (click)="onDelete(employee.empId)">
+                      <i class="bi bi-trash-fill"></i> Delete
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="employeeList.length === 0">
+                  <td colspan="6" class="text-center text-muted py-4">
+                    <i class="bi bi-inbox display-4"></i>
+                    <p class="mt-2">No employees found. Add your first employee!</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Employee Form -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-lg animate-slide-in-right">
+        <div class="card-header" 
+             [ngClass]="isEditMode ? 'bg-gradient-warning' : 'bg-gradient-success'">
+          <h4 class="mb-0">
+            <i [ngClass]="isEditMode ? 'bi bi-pencil-square' : 'bi bi-person-plus-fill'"></i>
+            {{isEditMode ? 'Edit Employee' : 'Add Employee'}}
+          </h4>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="employeeForm">
+            <!-- Row 1: Name and Email -->
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="name" class="form-label">
+                    <i class="bi bi-person"></i> Name:
+                  </label>
+                  <input type="text" 
+                         class="form-control form-control-animated" 
+                         formControlName="empName" 
+                         id="name" 
+                         placeholder="Enter Name">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="email" class="form-label">
+                    <i class="bi bi-envelope"></i> Email:
+                  </label>
+                  <input type="email" 
+                         class="form-control form-control-animated" 
+                         formControlName="empEmail" 
+                         id="email" 
+                         placeholder="Enter Email">
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: Contact and City -->
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="contact" class="form-label">
+                    <i class="bi bi-telephone"></i> Contact:
+                  </label>
+                  <input type="text" 
+                         class="form-control form-control-animated" 
+                         formControlName="empPhone" 
+                         id="contact" 
+                         placeholder="Contact No">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="city" class="form-label">
+                    <i class="bi bi-building"></i> City:
+                  </label>
+                  <input type="text" 
+                         class="form-control form-control-animated" 
+                         formControlName="empCity" 
+                         id="city" 
+                         placeholder="City">
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 3: State and Country -->
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="state" class="form-label">
+                    <i class="bi bi-map"></i> State:
+                  </label>
+                  <input type="text" 
+                         class="form-control form-control-animated" 
+                         formControlName="empState" 
+                         id="state" 
+                         placeholder="State">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="country" class="form-label">
+                    <i class="bi bi-globe"></i> Country:
+                  </label>
+                  <input type="text" 
+                         class="form-control form-control-animated" 
+                         formControlName="empCountry" 
+                         id="country" 
+                         placeholder="Country">
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 4: Pincode -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="pincode" class="form-label">
+                    <i class="bi bi-mailbox"></i> Pincode:
+                  </label>
+                  <input type="text" 
+                         class="form-control form-control-animated" 
+                         formControlName="empPincode" 
+                         id="pincode" 
+                         placeholder="Pincode">
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 5: Address -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="address" class="form-label">
+                    <i class="bi bi-house-door"></i> Address:
+                  </label>
+                  <textarea class="form-control form-control-animated" 
+                            formControlName="address" 
+                            id="address" 
+                            rows="3"
+                            placeholder="Enter Address"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="row">
+              <div class="col-12 d-grid gap-2">
+                <button type="submit" 
+                        class="btn btn-lg btn-action-submit"
+                        [ngClass]="isEditMode ? 'btn-warning' : 'btn-success'"
+                        (click)="onSubmit()">
+                  <i [ngClass]="isEditMode ? 'bi bi-check-circle' : 'bi bi-plus-circle'"></i>
+                  {{isEditMode ? 'Update Employee' : 'Add Employee'}}
+                </button>
+                <button type="reset" 
+                        class="btn btn-danger btn-lg btn-action-reset" 
+                        (click)="onReset()">
+                  <i class="bi bi-x-circle"></i> Reset Form
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
